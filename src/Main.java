@@ -1,48 +1,76 @@
 import java.util.*;
 
-class Solution{
-    public void balancedBrackets(String s, int n) {
+public class Main{
 
-        Stack<Character> st = new Stack<>();
+    public static void main(String[] args) {
+        Scanner scn = new Scanner(System.in);
+        String str=scn.nextLine();
+        valueOfExpression(str);
 
-        for(int i = 0; i < s.length(); i++){
-            char c = s.charAt(i);
-
-            // If closing bracket
-            if(c == '}' || c == ')' || c == ']') {
-
-                if(st.isEmpty()) {
-                    System.out.println("NO");
-                    return;
-                }
-
-                char top = st.peek();
-
-                if((c == '}' && top != '{') ||
-                        (c == ')' && top != '(') ||
-                        (c == ']' && top != '[')) {
-                    System.out.println("NO");
-                    return;
-                }
-
-                st.pop();
+    }
+    public static boolean isOperator(char c){
+        return (c=='%' || c=='*' || c=='-' || c=='+' || c=='/');
+    }
+    public static int calculate(int opr1,int opr2,char c){
+        if(c=='+') return opr1+opr2;
+        if(c=='-') return opr1-opr2;
+        if(c=='*') return opr1*opr2;
+        if(c=='/') return opr1/opr2;
+        return opr1%opr2;
+    }
+    public static void solve(String str){
+        Stack<Integer> st=new Stack<>();
+        for(int i=str.length()-1;i>=0;i--){
+            char c=str.charAt(i);
+            if(isOperator(c)){
+                int val1=st.pop();
+                int val2=st.pop();
+                int ans=calculate(val1,val2,c);
+                st.push(ans);
             }
-            else {
-                st.push(c);
+            else{
+                st.push(c-'0');
             }
         }
 
-        if(st.isEmpty()) System.out.println("YES");
-        else System.out.println("NO");
+        System.out.println(st.peek());
     }
-}
+    public static void prefixToInfix(String str){
+        Stack<String> st=new Stack<>();
+        for(int i=str.length()-1;i>=0;i--){
+            char c=str.charAt(i);
+            if(isOperator(c)){
+                String val1=st.pop();
+                String val2=st.pop();
+                st.push("("+val1+c+val2+")");
+            }
+            else{
+                st.push(c+"");
+            }
+        }
+        System.out.println(st.peek());
+    }
+    public static void prefixToPostfix(String str){
+        Stack<String> st=new Stack<>();
+        for(int i=str.length()-1;i>=0;i--){
+            char c=str.charAt(i);
+            if(isOperator(c)){
+                String val1=st.pop();
+                String val2=st.pop();
+                st.push(val1+val2+c);
+            }
+            else{
+                st.push(c+"");
+            }
+        }
+        System.out.println(st.peek());
+    }
+    public static void valueOfExpression(String str)
+    {
+        // your code here
+        solve(str);
+        prefixToInfix(str);
+        prefixToPostfix(str);
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        String s = sc.next();
-        Solution Obj = new Solution();
-        Obj.balancedBrackets(s, n);
     }
 }
